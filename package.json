@@ -1,0 +1,27 @@
+{
+  "name": "files",
+  "version": "1.0.0",
+  "description": "File utilities with async-await support",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CloudVector/files.git"
+  },
+  "keywords": [
+    "files",
+    "utils"
+  ],
+  "author": "Tamara Dukai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CloudVector/files/issues"
+  },
+  "homepage": "https://github.com/CloudVector/files#readme",
+  "devDependencies": {
+    "chai": "^4.x",
+    "lab": "^15.x"
+  }
+}
