@@ -2,44 +2,110 @@
 
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
+const expect = require('code').expect;
 const path = require('path');
-const expect = require('chai').expect;
-const files = require('./index.js');
+const tools = require('./index.js');
 
-lab.experiment('files', () => {
+const TEST_DIR = 'test';
+const TEST_FILE = 'file-';
+const TEST_JSON = '{}';
+const TEST_TEXT = 'ABC';
+const SUB_DIRS = ['alpha', 'beta', 'gamma', 'delta'];
 
-    lab.test('folders', async () => {
+// Setup the environment
+const runBefore = async () => {
+    await tools.createDirectory(path.join(__dirname, TEST_DIR));
+    let count = 1;
+    let tasks = [];
+    SUB_DIRS.forEach(async (dir) => {
+        // Create folder
+        await tools.createDirectory(path.join(__dirname, TEST_DIR, dir));
+        // Create test files
+        tasks.push(tools.createFile(path.join(__dirname, TEST_DIR, dir, [TEST_FILE, count, '.json'].join('')), TEST_JSON));
+        tasks.push(tools.createFile(path.join(__dirname, TEST_DIR, dir, [TEST_FILE, count, '.txt'].join('')), TEST_TEXT));
+        count++;
+    });
+    await Promise.all(tasks);
+};
+
+const runAfter = async () => {
+    let tasks = [];
+    SUB_DIRS.forEach(async (dir) => {
+        tasks.push(tools.remove(path.join(__dirname, TEST_DIR, dir)));
+    });
+    // Remove sub directories
+    await Promise.all(tasks);
+    // Remove main directory
+    await tools.remove(path.join(__dirname, TEST_DIR));
+};
+
+// Build the test environment
+lab.before(runBefore);
+
+// Cleanup the test environment
+lab.after(runAfter);
+
+
+lab.experiment('list', () => {
+
+    lab.test('directories', async (flags) => {
         let sourcePath = path.join(__dirname, 'test');
-        try {
-            let folders = await files.folders(sourcePath);
-            // Check expectations
-            expect(folders).to.be.an('array');
-            console.log(folders);
-        } catch (err) {
-            console.error(err);
-        }
+        let list = await tools.directories(sourcePath);
+        // Check expectations
+        expect(list).to.be.an.array();
+        flags.note(JSON.stringify(list, null, 4));
     });
 
-    lab.test('all files', async () => {
-        let sourcePath = path.join(__dirname, 'test', 'beta');
-        try {
-            let names = await files.names(sourcePath);
-            expect(names).to.be.an('array');
-            console.log(names);
-        } catch (err) {
-            console.error(err);
-        }
+    lab.test('all files', async (flags) => {
+        let sourcePath = path.join(__dirname, TEST_DIR, 'beta');
+        let list = await tools.files(sourcePath);
+        expect(list).to.be.an.array();
+        flags.note(JSON.stringify(list, null, 4));
     });
 
-    lab.test('specific files', async () => {
-        let sourcePath = path.join(__dirname, 'test', 'beta');
-        try {
-            let names = await files.names(sourcePath, '.json');
-            expect(names).to.be.an('array');
-            console.log(names);
-        } catch (err) {
-            console.error(err);
-        }
+    lab.test('json files', async (flags) => {
+        let sourcePath = path.join(__dirname, TEST_DIR, 'beta');
+        let list = await tools.files(sourcePath, '.json');
+        expect(list).to.be.an.array();
+        flags.note(JSON.stringify(list, null, 4));
     });
 
+});
+
+
+lab.experiment('write-read', () => {
+    lab.test('content', async () => {
+        let file = path.join(__dirname, TEST_DIR, 'readwrite.txt');
+        await tools.createFile(file, 'HELLO WORLD');
+        let content = await tools.read(file);
+        expect(content).to.be.a.string();
+        expect(content).to.be.equal('HELLO WORLD');
+        await tools.remove(file);
+    });
+});
+
+lab.experiment('copy', () => {
+    lab.test('file', async () => {
+        let src = path.join(__dirname, TEST_DIR, 'alpha', 'apple.txt');
+        let dest = path.join(__dirname, TEST_DIR, 'delta', 'apple.txt');
+        await tools.createFile(src, 'DELICIOUS');
+        await tools.copy(src, dest);
+        let content = await tools.read(dest);
+        expect(content).to.be.a.string();
+        expect(content).to.be.equal('DELICIOUS');
+        await tools.remove(src);
+        await tools.remove(dest);
+    });
+});
+
+lab.experiment('rename', () => {
+    lab.test('content', () => {
+
+    });
+});
+
+lab.experiment('remove', () => {
+    lab.test('content', () => {
+
+    });
 });

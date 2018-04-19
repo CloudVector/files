@@ -1,27 +1,32 @@
 {
-  "name": "files",
+  "name": "@cloudvector/tools",
   "version": "1.0.0",
-  "description": "File utilities with async-await support",
+  "description": "Various tools and utilities with async-await support",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CloudVector/files.git"
+    "url": "git+https://github.com/CloudVector/tools.git"
   },
   "keywords": [
+    "tools",
     "files",
-    "utils"
+    "utilities"
   ],
   "author": "Tamara Dukai",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CloudVector/files/issues"
+    "url": "https://github.com/CloudVector/tools/issues"
   },
-  "homepage": "https://github.com/CloudVector/files#readme",
+  "homepage": "https://github.com/CloudVector/tools#readme",
   "devDependencies": {
-    "chai": "^4.x",
+    "code": "^5.x",
+    "gulp": "^3.x",
+    "gulp-eslint": "^4.x",
+    "gulp-expect-file": "^0.x",
+    "gulp-lab": "^1.x",
+    "gulp-load-plugins": "^1.x",
+    "gulp-util": "^3.x",
     "lab": "^15.x"
   }
 }
