@@ -88,7 +88,7 @@ internals.copy = async (src, dest) => {
 
 /* Read a file */
 internals.read = (file, options) => {
-    options = options || 'utf8';
+    options = options || { encoding: 'utf8' };
     return new Promise((resolve, reject) => {
         fs.readFile(file, options, (err, data) => {
             if (err) {
@@ -150,7 +150,7 @@ internals.remove = (file) => {
 
 /* write a file */
 internals.write = (file, content, options) => {
-    options = options || 'utf8';
+    options = options || { encoding: 'utf8' };
     return new Promise((resolve, reject) => {
         fs.writeFile(file, content, options, (err) => {
             if (err) {
