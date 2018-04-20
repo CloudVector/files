@@ -1,6 +1,6 @@
 {
   "name": "@cloudvector/tools",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Various tools and utilities with async-await support",
   "main": "index.js",
   "scripts": {},
