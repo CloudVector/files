@@ -39,7 +39,7 @@ internals.copyWithEvent = async (src, dest, event) => {
         dest: dest,
         content: await internals.read(src)
     };
-    options = event(options);
+    options = await event(options);
     await internals.write(options.dest, options.content);
 };
 
