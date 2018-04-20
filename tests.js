@@ -14,12 +14,12 @@ const SUB_DIRS = ['alpha', 'beta', 'gamma', 'delta'];
 
 // Setup the environment
 const runBefore = async () => {
-    await tools.createDirectory(path.join(__dirname, TEST_DIR));
+    await tools.createDir(path.join(__dirname, TEST_DIR));
     let count = 1;
     let tasks = [];
     SUB_DIRS.forEach(async (dir) => {
         // Create folder
-        await tools.createDirectory(path.join(__dirname, TEST_DIR, dir));
+        await tools.createDir(path.join(__dirname, TEST_DIR, dir));
         // Create test files
         tasks.push(tools.createFile(path.join(__dirname, TEST_DIR, dir, [TEST_FILE, count, '.json'].join('')), TEST_JSON));
         tasks.push(tools.createFile(path.join(__dirname, TEST_DIR, dir, [TEST_FILE, count, '.txt'].join('')), TEST_TEXT));
@@ -114,7 +114,7 @@ lab.experiment('rename', () => {
     lab.test('directory', async () => {
         let src = path.join(__dirname, TEST_DIR, 'theta');
         let dest = path.join(__dirname, TEST_DIR, 'omega');
-        await tools.createDirectory(src);
+        await tools.createDir(src);
         await tools.createFile(path.join(src, 'something.txt'), 'SOMETHING');
         await tools.rename(src, dest);
         let content = await tools.read(path.join(dest, 'something.txt'));

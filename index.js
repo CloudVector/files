@@ -163,7 +163,7 @@ internal.write = (file, content, options) => {
 };
 
 /* Creates a directory */
-internal.createDirectory = (dir) => {
+internal.createDir = (dir) => {
     return new Promise((resolve, reject) => {
         fs.mkdir(dir, (err) => {
             if (err) {
@@ -226,8 +226,11 @@ module.exports = {
         }
     },
     // Create directory
-    createDirectory: async (dir) => {
-        return await internal.createDirectory(dir);
+    createDir: async (dir) => {
+        return await internal.createDir(dir);
+    },
+    isDir: (file) => {
+        return fs.statSync(file).isDirectory();
     },
     // Create file
     createFile: async (file, content) => {
