@@ -33,6 +33,8 @@ const runAfter = async () => {
     SUB_DIRS.forEach(async (dir) => {
         tasks.push(tools.remove(path.join(__dirname, TEST_DIR, dir)));
     });
+    // Add omega folder
+    tasks.push(tools.remove(path.join(__dirname, TEST_DIR, 'omega')));
     // Remove sub directories
     await Promise.all(tasks);
     // Remove main directory
@@ -72,7 +74,6 @@ lab.experiment('list', () => {
 
 });
 
-
 lab.experiment('write-read', () => {
     lab.test('content', async () => {
         let file = path.join(__dirname, TEST_DIR, 'readwrite.txt');
@@ -99,13 +100,42 @@ lab.experiment('copy', () => {
 });
 
 lab.experiment('rename', () => {
-    lab.test('content', () => {
+    lab.test('file', async () => {
+        let src = path.join(__dirname, TEST_DIR, 'beta', 'apple.txt');
+        let dest = path.join(__dirname, TEST_DIR, 'beta', 'orange.txt');
+        await tools.createFile(src, 'DELICIOUS');
+        await tools.rename(src, dest);
+        let content = await tools.read(dest);
+        expect(content).to.be.a.string();
+        expect(content).to.be.equal('DELICIOUS');
+        await tools.remove(dest);
+    });
 
+    lab.test('directory', async () => {
+        let src = path.join(__dirname, TEST_DIR, 'theta');
+        let dest = path.join(__dirname, TEST_DIR, 'omega');
+        await tools.createDirectory(src);
+        await tools.createFile(path.join(src, 'something.txt'), 'SOMETHING');
+        await tools.rename(src, dest);
+        let content = await tools.read(path.join(dest, 'something.txt'));
+        expect(content).to.be.a.string();
+        expect(content).to.be.equal('SOMETHING');
     });
 });
 
 lab.experiment('remove', () => {
-    lab.test('content', () => {
-
+    lab.test('file', async () => {
+        let file = path.join(__dirname, TEST_DIR, 'gamma', 'apple.txt');
+        await tools.createFile(file, 'DELICIOUS');
+        let content = await tools.read(file);
+        expect(content).to.be.a.string();
+        expect(content).to.be.equal('DELICIOUS');
+        await tools.remove(file);
+        try {
+            content = await tools.read(file);
+        } catch (err) {
+            expect(err).to.be.an.object();
+            expect(err.code).to.be.equal('ENOENT');
+        }
     });
 });

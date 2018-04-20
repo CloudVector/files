@@ -209,6 +209,10 @@ module.exports = {
     remove: async (file) => {
         return await internal.remove(file);
     },
+    // Rename a single file or directory
+    rename: async (oldPath, newPath) => {
+        return await internal.rename(oldPath, newPath);
+    },
     // Copy a single file or directory
     copy: async (src, dest, event) => {
         if (typeof event === 'function') {
