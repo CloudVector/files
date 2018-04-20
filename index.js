@@ -33,25 +33,25 @@ internals.list = (dir, options) => {
 };
 
 // Call an event while reading and writing a file
-internals.copyWithEvent = async (src, dest, event) => {
-    let options = {
+internals.copyWithEvent = async (src, dest, event, options) => {
+    let data = {
         src: src,
         dest: dest,
-        content: await internals.read(src)
+        content: await internals.read(src, options)
     };
-    options = await event(options);
-    await internals.write(options.dest, options.content);
+    data = await event(data);
+    await internals.write(data.dest, data.content);
 };
 
 /* Copy a file or a full directory */
-internals.copyContent = async (src, dest, event) => {
+internals.copyContent = async (src, dest, event, options) => {
     // Check if both is directory
     if (fs.statSync(src).isDirectory() && fs.statSync(dest).isDirectory()) {
         let list = await internals.list(src, { files: true });
         list.forEach(async (file) => {
             let srcFile = path.join(src, file);
             let destFile = path.join(dest, file);
-            await internals.copyWithEvent(srcFile, destFile, event);
+            await internals.copyWithEvent(srcFile, destFile, event, options);
         });
     } else {
         await internals.copyWithEvent(src, dest, event);
@@ -218,9 +218,9 @@ module.exports = {
         return await internals.rename(oldPath, newPath);
     },
     // Copy a single file or directory
-    copy: async (src, dest, event) => {
+    copy: async (src, dest, event, options) => {
         if (typeof event === 'function') {
-            return await internals.copyContent(src, dest, event);
+            return await internals.copyContent(src, dest, event, options);
         } else {
             return await internals.copy(src, dest);
         }
