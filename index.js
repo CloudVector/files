@@ -34,9 +34,13 @@ internal.list = (dir, options) => {
 
 // Call an event while reading and writing a file
 internal.copyWithEvent = async (src, dest, event) => {
-    let content = await internal.read(src);
-    content = event(content, src, dest);
-    await internal.write(dest, content);
+    let options = {
+        src: src,
+        dest: dest,
+        content: await internal.read(src);
+    }
+    options = event(options);
+    await internal.write(options.dest, options.content);
 };
 
 /* Copy a file or a full directory */
